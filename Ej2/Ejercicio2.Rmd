@@ -11,11 +11,11 @@ library(gtools)
 ```
 
 ### Ejercicio 2
-¿En que se diferencian las permutaciones y combinaciones?
+¿En qué se diferencian las permutaciones y combinaciones?
 
 La diferencia entre estos dos radica en que en las permutaciones el orden es importante en los resultados, en cambio para las combinaciones no es importante el orden, tomando como un mismo resultado si sale un elemento primero o ultimo.
 
-Las formulas que caracterizan a ambas son:
+Las fórmulas que caracterizan a ambas son:
 
 * #### Permutación
 \[nP_r = \frac{n!}{(n-r)!}\]
@@ -24,7 +24,7 @@ Las formulas que caracterizan a ambas son:
 \[nC_r = \frac{n!}{(n-r)!r!}\]
 
 ### Ejercicio 3
-¿Que hacen las funciones combinations y permutations?
+¿Qué hacen las funciones combinations y permutations?
 
 * Combinations: Esta función crea una matriz con las posibles combinaciones y se usa de la siguiente manera
 
@@ -32,9 +32,9 @@ Las formulas que caracterizan a ambas son:
 combinations(3, 2, v = 1:3)
 ```
 
-donde 3 es el largo del vector de entrada, 2 es el largo del vector de salida y v es es el vector de entrada, ademas tiene configuraciones como set que indica si los duplicados se eliminan del vector de entrada, y repeats.allowed que indica si los resultados son con repetición o no.
+donde 3 es el largo del vector de entrada, 2 es el largo del vector de salida y v es es el vector de entrada, además tiene configuraciones como set que indica si los duplicados se eliminan del vector de entrada, y repeats.allowed que indica si los resultados son con repetición o no.
 
-* Permutations: Esta función tambien crea una matriz pero con las posibles permutaciones del vector y se usa asi
+* Permutations: Esta función también crea una matriz pero con las posibles permutaciones del vector y se usa asi
 
 ```{r}
 permutations(3, 2, v = 1:3)
@@ -46,9 +46,11 @@ las entradas son las mismas que en combinations.
 
 Calcule:
 
-#### La cantidad de permutaciones posibles con n = 11 y r = 3 y sin repetición
+#### La cantidad de permutaciones posibles con n = 11 y r = 3 con y sin repetición
 
 ```{r}
+permutaciones = permutations(11, 3, v = 1:11, repeats.allowed = TRUE)
+nrow(permutaciones)
 permutaciones = permutations(11, 3, v = 1:11)
 nrow(permutaciones)
 ```
@@ -62,7 +64,7 @@ combinaciones = combinations(5, 3, v = c('a', 'b', 'c', 'd', 'e'))
 nrow(combinaciones)
 ```
 
-#### La cantidad de permutaciones y combinaciones con n = 39 y r = 25 y sin repetición
+#### La cantidad de permutaciones y combinaciones con n = 39 y r = 25 sin repetición
 El uso de las funciones permutations y combinations, no logra calcular la cantidad, por lo que se utilizan las formulas
 ```{r}
 permutacion = factorial(39)/(factorial(39-25))
@@ -79,7 +81,7 @@ Considere un problema de una vendedora viajera que debe recorrer 50 ciudades y v
 la formula de que la ruta sea optima esta representada por:
 \[Probabilidad = \frac{1}{n° casos}\]
 \[n° casos = permutaciones\]
-como la cantidad de posibilidades es demasiado grande para la funcion permutations se usa la formula
+como la cantidad de posibilidades es demasiado grande para la función permutations se usa la formula
 ```{r}
 permutacion = factorial(50)/factorial(50-50)
 probabilidad = 1/permutacion
@@ -88,7 +90,7 @@ probabilidad
 
 * #### Si se selecciona una ruta al azar que es distinta a la anterior ¿Cuál es la probabilidad de que sea la ruta óptima?
 
-La probabilidad viene dada por \[1/(permutaciones - 1)\] por lo que seria
+La probabilidad viene dada por \[\frac{1}{permutaciones - 1}\] por lo que seria
 ```{r}
 probabilidad = 1/(permutacion-1)
 probabilidad
@@ -106,7 +108,7 @@ La ecuación con la que se puede resolver el problema es el teorema de Bayes:
 
 * ¿Cuál es la probabilidad de que haya sido atendido por Pedro?
 
-Para saber la probabilidad de que un cliente haya sido atentido por Pedro, se debe condicionar con que el parabrisas este limpio y se representa por
+Para saber la probabilidad de que un cliente haya sido atendido por Pedro, se debe condicionar con que el parabrisas este limpio y se representa por
 \[P(Pedro|L) = \frac{P(L|Pe)P(Pe)}{P(L)}\]
 Se necesita obtener P(L) para calcularlo y P(L) se obtiene de
 \[P(L) = P(Pe)P(L|Pe)+P(Ja)P(L|Ja)+P(To)P(L|To)+P(Geo)P(L|Geo)+P(Ma)P(L|Ma)\]
@@ -116,7 +118,7 @@ p_l = (0.6*0.9)+(0.15*0.9)+(0.05*0.95)+(0.1*0.4)+(0.1*0.95)
 p_l
 ```
 
-entonces la probabilidad de que un cliente sea atentido por Pedro es:
+entonces la probabilidad de que un cliente sea atendido por Pedro es:
 \[P(Pe|L) = \frac{0.95*0.05}{0.8575}\]
 ```{r}
 p_pe = (0.05*0.95)/p_l
@@ -126,7 +128,7 @@ p_pe
 
 * ¿Cuál es la probabilidad de que haya sido atendido por Janet o Georgina?
 
-Esta probablidad se obtiene de
+Esta probabilidad se obtiene de
 \[P(Geo \cup Ja |L) = \frac{P(Geo)P(L|Geo)}{P(L)}+\frac{P(Ja)P(L|Ja)}{P(L)}\]
 lo que da como resultado
 ```{r}
@@ -136,9 +138,9 @@ p_geoUja = p_geo + p_ja
 p_geoUja
 ```
 
-* Calcule la probabilidad de que haya sido atendido por Janet, Georgina, Tomás,Pedro o Marcela. ¿Qué se puede observar?
+* Calcule la probabilidad de que haya sido atendido por Janet, Georgina, Tomás, Pedro o Marcela. ¿Qué se puede observar?
 
-La probabilidad de que haya sido atentido por cualquiera de los trabajadores es
+La probabilidad de que haya sido atendido por cualquiera de los trabajadores es
 \[P(Geo \cup Ja \cup Pe \cup Ma \cup To |L) = \frac{P(Geo)P(L|Geo)}{P(L)}+\frac{P(Ja)P(L|Ja)}{P(L)}+\frac{P(Pe)P(L|Pe)}{P(L)}+\frac{P(Ma)P(L|Ma)}{P(L)}+\frac{P(To)P(L|To)}{P(L)}\]
 que queda
 ```{r}
@@ -147,7 +149,7 @@ p_to = (0.6*0.9)/p_l
 p_todos = p_ma + p_to + p_geo + p_pe + p_ja
 p_todos
 ```
-se observa que da como resultado 1, lo que quiere decir que siempre sera uno de estos cinco quien haya limpiado un parabrisa, ya que conforman el total de trabajadores.
+se observa que da como resultado 1, lo que quiere decir que siempre será uno de estos cinco quien haya limpiado un parabrisa, ya que conforman el total de trabajadores.
 
 ### Ejercicio 7
 

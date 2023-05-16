@@ -359,12 +359,12 @@ display: none;
 
 <div id="ejercicio-2" class="section level3">
 <h3>Ejercicio 2</h3>
-<p>¿En que se diferencian las permutaciones y combinaciones?</p>
+<p>¿En qué se diferencian las permutaciones y combinaciones?</p>
 <p>La diferencia entre estos dos radica en que en las permutaciones el
 orden es importante en los resultados, en cambio para las combinaciones
 no es importante el orden, tomando como un mismo resultado si sale un
 elemento primero o ultimo.</p>
-<p>Las formulas que caracterizan a ambas son:</p>
+<p>Las fórmulas que caracterizan a ambas son:</p>
 <ul>
 <li><h4 id="permutación">Permutación</h4>
 <p><span class="math display">\[nP_r =
@@ -376,7 +376,7 @@ elemento primero o ultimo.</p>
 </div>
 <div id="ejercicio-3" class="section level3">
 <h3>Ejercicio 3</h3>
-<p>¿Que hacen las funciones combinations y permutations?</p>
+<p>¿Qué hacen las funciones combinations y permutations?</p>
 <ul>
 <li>Combinations: Esta función crea una matriz con las posibles
 combinaciones y se usa de la siguiente manera</li>
@@ -387,12 +387,12 @@ combinaciones y se usa de la siguiente manera</li>
 ## [2,]    1    3
 ## [3,]    2    3</code></pre>
 <p>donde 3 es el largo del vector de entrada, 2 es el largo del vector
-de salida y v es es el vector de entrada, ademas tiene configuraciones
+de salida y v es es el vector de entrada, además tiene configuraciones
 como set que indica si los duplicados se eliminan del vector de entrada,
 y repeats.allowed que indica si los resultados son con repetición o
 no.</p>
 <ul>
-<li>Permutations: Esta función tambien crea una matriz pero con las
+<li>Permutations: Esta función también crea una matriz pero con las
 posibles permutaciones del vector y se usa asi</li>
 </ul>
 <pre class="r"><code>permutations(3, 2, v = 1:3)</code></pre>
@@ -408,9 +408,12 @@ posibles permutaciones del vector y se usa asi</li>
 <div id="ejercicio-4" class="section level3">
 <h3>Ejercicio 4</h3>
 <p>Calcule:</p>
-<div id="la-cantidad-de-permutaciones-posibles-con-n-11-y-r-3-y-sin-repetición" class="section level4">
-<h4>La cantidad de permutaciones posibles con n = 11 y r = 3 y sin
+<div id="la-cantidad-de-permutaciones-posibles-con-n-11-y-r-3-con-y-sin-repetición" class="section level4">
+<h4>La cantidad de permutaciones posibles con n = 11 y r = 3 con y sin
 repetición</h4>
+<pre class="r"><code>permutaciones = permutations(11, 3, v = 1:11, repeats.allowed = TRUE)
+nrow(permutaciones)</code></pre>
+<pre><code>## [1] 1331</code></pre>
 <pre class="r"><code>permutaciones = permutations(11, 3, v = 1:11)
 nrow(permutaciones)</code></pre>
 <pre><code>## [1] 990</code></pre>
@@ -425,9 +428,9 @@ nrow(combinaciones_r)</code></pre>
 nrow(combinaciones)</code></pre>
 <pre><code>## [1] 10</code></pre>
 </div>
-<div id="la-cantidad-de-permutaciones-y-combinaciones-con-n-39-y-r-25-y-sin-repetición" class="section level4">
-<h4>La cantidad de permutaciones y combinaciones con n = 39 y r = 25 y
-sin repetición</h4>
+<div id="la-cantidad-de-permutaciones-y-combinaciones-con-n-39-y-r-25-sin-repetición" class="section level4">
+<h4>La cantidad de permutaciones y combinaciones con n = 39 y r = 25 sin
+repetición</h4>
 <p>El uso de las funciones permutations y combinations, no logra
 calcular la cantidad, por lo que se utilizan las formulas</p>
 <pre class="r"><code>permutacion = factorial(39)/(factorial(39-25))
@@ -449,7 +452,7 @@ al azar</p>
 la probabilidad de que sea la ruta óptima?</h4></li>
 </ul>
 <p>la formula de que la ruta sea optima esta representada por: <span class="math display">\[Probabilidad = \frac{1}{n° casos}\]</span> <span class="math display">\[n° casos = permutaciones\]</span> como la
-cantidad de posibilidades es demasiado grande para la funcion
+cantidad de posibilidades es demasiado grande para la función
 permutations se usa la formula</p>
 <pre class="r"><code>permutacion = factorial(50)/factorial(50-50)
 probabilidad = 1/permutacion
@@ -460,7 +463,7 @@ probabilidad</code></pre>
 se selecciona una ruta al azar que es distinta a la anterior ¿Cuál es la
 probabilidad de que sea la ruta óptima?</h4></li>
 </ul>
-<p>La probabilidad viene dada por <span class="math display">\[1/(permutaciones - 1)\]</span> por lo que
+<p>La probabilidad viene dada por <span class="math display">\[\frac{1}{permutaciones - 1}\]</span> por lo que
 seria</p>
 <pre class="r"><code>probabilidad = 1/(permutacion-1)
 probabilidad</code></pre>
@@ -490,7 +493,7 @@ Bayes: <span class="math display">\[P(A_n|B) =
 <ul>
 <li>¿Cuál es la probabilidad de que haya sido atendido por Pedro?</li>
 </ul>
-<p>Para saber la probabilidad de que un cliente haya sido atentido por
+<p>Para saber la probabilidad de que un cliente haya sido atendido por
 Pedro, se debe condicionar con que el parabrisas este limpio y se
 representa por <span class="math display">\[P(Pedro|L) =
 \frac{P(L|Pe)P(Pe)}{P(L)}\]</span> Se necesita obtener P(L) para
@@ -499,7 +502,7 @@ P(Pe)P(L|Pe)+P(Ja)P(L|Ja)+P(To)P(L|To)+P(Geo)P(L|Geo)+P(Ma)P(L|Ma)\]</span></p>
 <pre class="r"><code>p_l = (0.6*0.9)+(0.15*0.9)+(0.05*0.95)+(0.1*0.4)+(0.1*0.95)
 p_l</code></pre>
 <pre><code>## [1] 0.8575</code></pre>
-<p>entonces la probabilidad de que un cliente sea atentido por Pedro es:
+<p>entonces la probabilidad de que un cliente sea atendido por Pedro es:
 <span class="math display">\[P(Pe|L) =
 \frac{0.95*0.05}{0.8575}\]</span></p>
 <pre class="r"><code>p_pe = (0.05*0.95)/p_l
@@ -509,7 +512,7 @@ p_pe</code></pre>
 <li>¿Cuál es la probabilidad de que haya sido atendido por Janet o
 Georgina?</li>
 </ul>
-<p>Esta probablidad se obtiene de <span class="math display">\[P(Geo
+<p>Esta probabilidad se obtiene de <span class="math display">\[P(Geo
 \cup Ja |L) =
 \frac{P(Geo)P(L|Geo)}{P(L)}+\frac{P(Ja)P(L|Ja)}{P(L)}\]</span> lo que da
 como resultado</p>
@@ -520,9 +523,9 @@ p_geoUja</code></pre>
 <pre><code>## [1] 0.2682216</code></pre>
 <ul>
 <li>Calcule la probabilidad de que haya sido atendido por Janet,
-Georgina, Tomás,Pedro o Marcela. ¿Qué se puede observar?</li>
+Georgina, Tomás, Pedro o Marcela. ¿Qué se puede observar?</li>
 </ul>
-<p>La probabilidad de que haya sido atentido por cualquiera de los
+<p>La probabilidad de que haya sido atendido por cualquiera de los
 trabajadores es <span class="math display">\[P(Geo \cup Ja \cup Pe \cup
 Ma \cup To |L) =
 \frac{P(Geo)P(L|Geo)}{P(L)}+\frac{P(Ja)P(L|Ja)}{P(L)}+\frac{P(Pe)P(L|Pe)}{P(L)}+\frac{P(Ma)P(L|Ma)}{P(L)}+\frac{P(To)P(L|To)}{P(L)}\]</span>
@@ -533,7 +536,7 @@ p_todos = p_ma + p_to + p_geo + p_pe + p_ja
 p_todos</code></pre>
 <pre><code>## [1] 1</code></pre>
 <p>se observa que da como resultado 1, lo que quiere decir que siempre
-sera uno de estos cinco quien haya limpiado un parabrisa, ya que
+será uno de estos cinco quien haya limpiado un parabrisa, ya que
 conforman el total de trabajadores.</p>
 </div>
 <div id="ejercicio-7" class="section level3">
