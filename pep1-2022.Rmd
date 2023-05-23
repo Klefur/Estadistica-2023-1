@@ -1,0 +1,189 @@
+---
+title: "Pep1-2022"
+author: "Joaquín Saldivia"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("ggplot2")
+library("plotly")
+library("extraDistr")
+```
+
+# Pregunta 1
+Un investigador estudió los ritmos biológicos en ratones para analizar el efecto del fármaco Probenecid en la reducción de peso (Morgan 2018). Cada mañana, el investigador registró el momento en que los ratones despertaron y comenzaron sus actividades. Este evento ocurrió entre las 5:35 y las 6:10 de la mañana. Si asume que la distribución de este evento es uniforme en ese rango de tiempo:
+
+## Preguntas
+a. Grafique la función de densidad correspondiente (6 puntos).
+b. Grafique la función de masa correspondiente (6 puntos).
+c. Calcule la media y la desviación estándar de la variable estudiada. Argumente y contextualice su respuesta (8).
+
+## Respuestas
+
+### Parte a
+
+La función de densidad describe la probabilidad relativa de una variable continua. Por lo tanto, debemos asumir que el tiempo de actividad de los ratoncitos es continuo. Para graficar esta función se puede usar la biblioteca ggplot2. Los valores extremos del rango (a,b
+) pueden estar definidos en horas, minutos u otra unidad que usted estime conveniente. Si utilizamos horas, el gráfico será el siguiente:
+
+```{r}
+a = 5.6
+b = 6.2
+
+x = seq(a, b, by=0.01)
+y = 1/(b-a)
+datos = data.frame(hours = x, f_x = y)
+
+grafico = ggplot(datos, aes(x, y))
+grafico = grafico + theme_bw()
+grafico = grafico + ylab("Densidad") + xlab("Horas")
+grafico = grafico + ggtitle("Densidad de Probabilidad")
+grafico = grafico + geom_density(fill = "navajowhite", color = "orange3", linewidth = 0.1)
+ggplotly(grafico)
+```
+
+### Parte b
+
+La función de masa describe la probabilidad relativa de una variable discreta. Por lo tanto, debemos asumir que el tiempo de actividad es discreto. Para graficar esta función se puede usar nuevamente la biblioteca ggplot2.
+
+```{r}
+x= seq(a,b,by=0.01)
+y = 1/length(x)
+
+grafico = ggplot(data=datos,aes(x=x,y=y))
+grafico = grafico + geom_bar(stat="identity",fill="navajowhite",color="orange3", size = 0.1)
+grafico = grafico + theme_bw() + ggtitle("Masa de probabilidades")
+grafico = grafico + xlab("Horas") + ylab("Masa") + coord_cartesian(ylim=c(0, 0.02))
+ggplotly(grafico)
+```
+
+### Parte c
+
+Con relación a las medidas solicitadas, su cálculo depende si consideramos el tiempo de actividad de los ratoncitos una variable continua o discreta. En el caso de continua será:
+
+```{r}
+media = (a+b)/2
+desviacion = round(sqrt(((b-a)^2)/12),3)
+
+print(paste(media,"±",desviacion))
+```
+
+en caso de ser una variable discreta sera:
+
+```{r}
+media = (a+b)/2
+desviacion = round(sqrt(((b-a+1)^2+1)/12),3)
+
+print(paste(media,"±",desviacion))
+```
+
+# Pregunta 2
+
+Un estudio ha señalado que en el Hospital de Medellín hubo 292 accidentes laborales entre los años 2015 y 2019 (Pérez-Correa 2022).
+
+## Preguntas
+
+a. Calcule la probabilidad de que hoy no ocurran accidentes (6 puntos).
+b. Calcule la probabilidad de que ocurran como máximo dos accidentes esta semana (6 puntos).
+c. Grafique la distribución de probabilidad asociada (8 puntos).
+
+## Respuestas
+
+### Parte a
+
+Como se ocupa la metrica de tiempo se ocupa la distribución poisson
+
+```{r}
+lambda_dia = 292/(5*365)
+prob_dia = dpois(0, lambda_dia)
+print(prob_dia)
+```
+
+### Parte B
+
+```{r}
+lambda_semana = 292/(5*52)
+prob_semana = dpois(2, lambda_semana)
+print(prob_semana)
+```
+
+
+### Parte C
+
+```{r}
+accidentes=seq(0,10)
+distribucion = dpois(accidentes,lambda_dia)
+datos=data.frame(accidentes,distribucion)
+
+grafico = ggplot(data=datos,aes(x=accidentes,y=distribucion))
+grafico = grafico + geom_bar(stat="identity",fill="navajowhite",color="orange3", size = 0.1)
+grafico = grafico + theme_bw() + ggtitle("Distribución de probabilidades - Poisson")
+grafico = grafico + xlab("Número de accidentes x día") + ylab("Probabilidad")
+ggplotly(grafico)
+
+```
+
+```{r}
+accidentes=seq(0,10)
+distribucion = dpois(accidentes,lambda_semana)
+datos=data.frame(accidentes,distribucion)
+
+grafico = ggplot(data=datos,aes(x=accidentes,y=distribucion))
+grafico = grafico + geom_bar(stat="identity",fill="navajowhite",color="orange3", size = 0.1)
+grafico = grafico + theme_bw() + ggtitle("Distribución de probabilidades - Poisson")
+grafico = grafico + xlab("Número de accidentes x semana") + ylab("Probabilidad")
+ggplotly(grafico)
+
+```
+
+# Pregunta 3
+
+Un investigador está utilizando un Modelo de Regresión de Cox para explicar una variable fisiológica causante de una enfermedad (Rivas 2006). Este modelo requiere la estimación de cuatro parámetros en un rango de 0 a 100: una constante base (mantisa) y tres asociados a un exponente. Para llevar a cabo la estimación, el investigador ha dividido cada variable en 10 intervalos.
+
+## Preguntas
+
+a. ¿Cuántos modelos diferentes deberá evaluar el investigador para considerar todas las posibles combinaciones de parámetros? (5 puntos).
+b. Si cada modelo tarda 1 minuto en ser evaluado en el computador del investigador, ¿cuántas horas de cómputo necesitará el investigador para evaluar todos los modelos? Asuma que usará el mismo equipo (5 puntos).
+c. Si usted descubre que la probabilidad de que un parámetro tome un determinado valor sigue una distribución normal con media 50 y desviación estándar 10, ¿qué sugeriría al investigador para abordar la estimación de parámetros? Explique su argumento (10 puntos).
+
+## Respuestas
+
+### Parte A
+
+como se tienen 4 variables y ambas con 10 intervalos las posibles combinaciones son:
+
+```{r}
+combinaciones = 10^4
+print(combinaciones)
+```
+
+### Parte B
+
+Como se tarda 1 min en ser evaluado puede se tiene:
+
+```{r}
+horas = combinaciones/60
+print(horas)
+```
+Le toma alrededor de 167 horas lo que es mucho
+
+### Parte C
+
+Dado que las variables siguen una distribución normal de media 50 y desviación estándar 10. La probabilidad de que las variables tengan un valor entre 40 y 60 es:
+
+```{r}
+probabilidad = round(pnorm(60,50,10)-pnorm(40,50,10),2)
+print(probabilidad)
+```
+
+Esto hace que la probabilidad de que los mejores parámetros estén entre 40 y 60 sea casi del 70%. Por lo tanto, le sugeriría al investigador acotar la búsqueda a este rango. Esto hace que el número de combinaciones sea 34=81
+ y tarde aproximadamente 1 hora 30 minutos.
+
+Si tiene más tiempo, podría llevar el rango de 30 y 70, que tiene casi del 95% de probabilidad. Esto hace que el número de combinaciones sea 34=625
+ y tarde aproximadamente 10 horas.
+ 
+```{r}
+probabilidad = round(pnorm(70,50,10)-pnorm(30,50,10),2)
+print(probabilidad)
+```
