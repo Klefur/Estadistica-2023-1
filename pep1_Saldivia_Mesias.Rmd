@@ -1,0 +1,169 @@
+---
+title: "PEP 1 Estadistica"
+author: "Joaquín Saldivia, Lucas Mesias"
+date: "2023-05-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(plotly)
+```
+
+# Pregunta 1
+
+Un grupo de investigadores ha estudiado los goles de la Liga Española en los torneos realizados entre los años 2000 al 2013, considerando diferentes tipos de distribuciones (Sánchez-Flores et al. 2016). Los autores indicaron que en promedio se hacen 2.689 goles por partido (punto decimal). Con base en esta información:
+
+## Preguntas
+
+a. ¿Cuál es la probabilidad de que, después de los primeros 45 minutos del primer juego, las porterías sigan invictas? Justifique la elección de la distribución utilizada.
+b. ¿Cuál es la probabilidad de que, al finalizar los primeros tres partidos, se hayan realizado más de 5 goles en total?
+c. Grafique la distribución asociada y brinde contexto a su respuesta para el problema.
+
+## Respuesta
+
+### Parte A
+
+Se ocupara la distribución poisson por lo que hay que calcular el lambda:
+\[\lambda = \frac{2.689*45}{90}\]
+siendo este lambda la cantidad de goles que se hacen por tiempo (45 minutos).
+
+```{r}
+lambda_tiempo = 2.689/2
+prob_primer_tiempo = dpois(0, lambda_tiempo)
+print(prob_primer_tiempo)
+```
+Hay un 26% de que las porterias sigan invictas al final del primer tiempo.
+
+Se ocupa la distribución poisson porque se nos da una metrica de tiempo y se trabaja como discreta dado que se trabaja por minuto, ademas nos preguntan por la frecuencia de un evento dado un tiempo
+
+### Parte B
+
+Para calcular la probabilidad de que se hagan 5 goles despues de 3 partidos se ocupa un lambda:
+\[\lambda = {2.689*3}\]
+siendo este lambda el promedio de goles que se haria en 3 partidos.
+
+```{r}
+lambda_tres_partidos = 2.689*3
+prob_tres_partidos = 1-ppois(5, lambda_tres_partidos)
+print(prob_tres_partidos)
+```
+como se resultado se tiene que hay un 81.5% de que se hagan 5 goles en 3 partidos.
+
+### Parte C
+
+El grafico que denota la distribución de goles por partido es:
+
+```{r}
+goles=seq(0,10)
+lambda_partido = 2.689
+distribucion = dpois(goles,lambda_partido)
+datos=data.frame(goles,distribucion)
+
+grafico = ggplot(data=datos,aes(x=goles,y=distribucion))
+grafico = grafico + geom_bar(stat="identity",fill="navajowhite",color="orange3", linewidth = 0.1)
+grafico = grafico + theme_bw() + ggtitle("Distribución de probabilidades - Poisson")
+grafico = grafico + xlab("Número de goles x partido") + ylab("Probabilidad")
+ggplotly(grafico)
+```
+
+# Pregunta 2
+
+Según datos del DEMRE, la antigua Prueba de Selección Universitaria (PSU) tenía una escala que iba de 150 a 850 puntos, siguiendo una distribución normal con promedio de 500 puntos y desviación estándar de 110. Por otro lado, la prueba PAES va de 100 a 1000 puntos y también sigue una distribución normal con media de 640 y desviación estándar de 140 puntos.
+
+## Preguntas
+
+a. Considerando el puntaje/los puntajes que usted/ustedes obtuvo/obtuvieron en la prueba de Matemáticas correspondiente, ¿qué porcentaje de las personas que rindieron esta prueba obtuvo un puntaje superior al suyo?
+b. Si el puntaje de corte para la carrera de Ingeniería Civil Informática en la Universidad de Santiago (USACH) en el año 2023 fue de 647 (PSU), ¿qué porcentaje de los estudiantes quedarían excluidos si solo se considera el puntaje obtenido en la prueba de matemáticas para el proceso de admisión?
+c. Grafique la distribución asociada y brinde contexto a su respuesta para el problema.
+
+## Respuestas
+
+### Parte A
+
+Los puntajes considerados son en base a la psu, 715 para Lucas y 710
+para Joaquín
+
+```{r}
+lucas = 715
+joaquin = 710
+
+mayores_lucas = 1-pnorm(lucas, mean=500, sd=110)
+mayores_joaquin = 1-pnorm(joaquin, mean=500, sd=110)
+
+print(mayores_lucas)
+print(mayores_joaquin)
+```
+
+Se ocupa uno menos la pnorm que calcula el porcentaje de personas con menor puntaje que lo evaluado
+
+### Parte B
+
+Se ocupa la distribucion anterior pero usando el puntaje de corte y se ve el porcentaje de gente que posee un puntaje igual o menor a este
+
+```{r}
+excluidos = pnorm(647, mean=500, sd=110)
+print(excluidos)
+```
+lo que equivale a un 90.9% de la población
+
+### Parte C
+
+```{r}
+puntaje=seq(150,850)
+distribucion = dnorm(puntaje, mean=500, sd=110)
+datos=data.frame(puntaje,distribucion)
+
+grafico = ggplot(data=datos,aes(x=puntaje,y=distribucion))
+grafico = grafico + geom_bar(stat="identity",fill="navajowhite",color="orange3", linewidth = 0.1)
+grafico = grafico + theme_bw() + ggtitle("Distribución de probabilidades - Normal")
+grafico = grafico + xlab("Puntajes PSU") + ylab("Población")
+ggplotly(grafico)
+```
+
+# Pregunta 3
+
+Un investigador está utilizando un modelo para explicar una variable fisiológica causante de una enfermedad (Rivas 2006). Este modelo requiere la estimación de cinco parámetros que pueden tomar un valor entre 0 a 100. Para llevar a cabo la estimación, el investigador ha discretizado el intervalo de cada parámetro en 100 partes.
+
+## Preguntas
+
+a. ¿Cuántos modelos diferentes deberá evaluar el investigador para considerar todas las posibles combinaciones de parámetros? (5 puntos).
+b. Si cada modelo tarda 1 minuto en ser evaluado en el computador del investigador, ¿cuántas horas de cómputo necesitará el investigador para evaluar todos los modelos? Asuma que usará el mismo equipo (5 puntos).
+c. Si usted descubre que la probabilidad de que un parámetro tome un determinado valor sigue una distribución normal con media 50 y desviación estándar 10, ¿qué sugeriría al investigador para abordar la estimación de parámetros? Explique su argumento sobre datos cuantitativos (10 puntos).
+
+## Respuestas
+
+### Parte A
+
+La cantidad de modelos que deben ser evaluados depende de la combinación de los valores. tenemos 101 intervalos y 5 parametros
+
+```{r}
+
+parametros = 5
+intervalos = 101
+
+combinaciones = intervalos^parametros
+print(combinaciones)
+```
+
+### Parte B
+
+```{r}
+horas = combinaciones/60
+
+print(horas)
+```
+el tiempo total que se va a demorar es 175168342 horas, lo que es un tiempo muy grande.
+
+### Parte C
+
+Se sabe que se tiene una distribución normal con media 50 y desviación estándar 10, la probabilidad de que los valores esten entre 40 y 60 es:
+
+```{r}
+probabilidad = round(pnorm(60,50,10)-pnorm(40,50,10),2)
+print(probabilidad)
+```
+Arroja un valor de 0.68 que equivale a un 68% de probabilidades de que encuentre mejores parametros en estos rangos, dejando el numero de combinaciones en \[30^5 = 24300000\] y se demore un aproximado de 405000 horas.
+
+Como recomendación, hacer menos intervalos para reducir circunstancialmente el tiempo de busqueda por ejemplo reducir los intervalos a la mitad da como resultado \[15^5 = 759375\] con un tiempo total aproximado 12656 horas y 15 minutos para un rango de 60 y 40.
