@@ -15,6 +15,7 @@ library(plotly)
 ```
 
 Para las distribuciones se usan los paquetes:
+
 * actuar
 * VGAM
 * gamlss.dist
@@ -23,15 +24,15 @@ Para las distribuciones se usan los paquetes:
 
 ### Explicación y cita
 
-La distribución de Benford o también conocida como la Ley de Benford o Ley del primer dígito, que asegura que en los numeros que existen en la vida real, la primera cifra que se espera que se repita con mas frecuencia es el 1.
+La distribución de Benford o también conocida como la Ley de Benford o Ley del primer dígito, que asegura que en los números que existen en la vida real, la primera cifra que se espera que se repita con más frecuencia es el 1.
 
 Se puede utilizar para la detección de fraude en contabilidad y el diseño de computadores.
 
-A continuacion se cita un paper que trata sobre detección de fraude en una cadena de suministro:
+A continuación se cita un paper que trata sobre detección de fraude en una cadena de suministro:
 
-"The careful application of Benford analysis leads to identify abnormally mismatch data and in depth analysis of those data helps those agencies to perform their task more effectively, efficiently and economically within a short span of time to detect and prevent fraudulent transactions."(Varma, Dr. T. N. y Varma, Dr. T. N. y Khan, DA, Fraud Detection in Supply Chain Using Benford Distribution, Agosto 1, 2012)
+"The careful application of Benford analysis leads to identify abnormally mismatch data and in depth analysis of those data helps those agencies to perform their task more effectively, efficiently and economically within a short span of time to detect and prevent fraudulent transactions."(Varma, Dr. T. N. y Varma, Dr. T. N. y Khan, DA, Fraud Detection in Supply Chain Using Benford Distribution, agosto 1, 2012)
 
-### Parametros y explicación
+### Parámetros y explicación
 
 Para las funciones:
 
@@ -40,14 +41,14 @@ Para las funciones:
 * qbenf(p, ndigits = 1, lower.tail = TRUE, log.p = FALSE)
 * rbenf(n, ndigits = 1)
 
-se identifican los parametros:
+se identifican los parámetros:
 
 * x, q: vector de cuantiles
 * p: vector de probabilidades
-* n: numero de observaciones, un solo numero positivo, si el largo de n es mayor a 1, entonces el largo será tomado como el numero requerido
-* ndigits: número de digitos iniciales, 1 ó 2, si es 1 la distribución soporta de 1 a 9, sino de 10 a 99
+* n: número de observaciones, un solo número positivo, si el largo de n es mayor a 1, entonces el largo será tomado como el numero requerido
+* ndigits: número de dígitos iniciales, 1 ó 2, si es 1 la distribución soporta de 1 a 9, sino de 10 a 99
 * log, log.p: si es verdadero todas las probabilidades p son entregadas como log(p)
-* lower.tail: Si es verdadero las probablidades son P[X <= x] sino P[X > x]
+* lower.tail: Si es verdadero las probabilidades son P[X <= x] sino P[X > x]
 
 ### Grafico de probabilidad y probabilidad acumulada
 
@@ -103,21 +104,21 @@ distribucion = rbenf(1000)
 hist(distribucion, breaks = 10, main = 'Histograma de 1000 datos')
 ```
 
-Se puede ver que a una cantidad pequeña de datos la dispersión de la distribución es muy grande si se compara con la función de densidad, pero a medida que se aumenta la cantidad de datos, se ve una distribución similar a la de densidad. 
+Se puede ver que a una cantidad pequeña de datos la dispersión de la distribución es muy grande si se compara con la función de densidad, pero a medida que se aumenta la cantidad de datos, se ve una distribución similar a la de densidad.  
 
 # Distribución Sichel
 
 ### Explicación y cita
 
-La distribución Sichel es el resultado de usar la distribución Inversa Gaussiana Generalizada como distribución de mezcla de para el parametro \lambda de Poisson.
+La distribución Sichel es el resultado de usar la distribución Inversa Gaussiana Generalizada como distribución de mezcla de para el parámetro \lambda de Poisson.
 
-Se puede usar en áreas como ingeniería en minas, psicologia industrial, ecología y estudios de mercado.
+Se puede usar en áreas como ingeniería en minas, psicología industrial, ecología y estudios de mercado.
 
-A continuación se cita un paper que estudia las matematicas aplicadas y computación:
+A continuación se cita un paper que estudia las matemáticas aplicadas y computación:
 
 "...The generalized hyperbolic distribution was introduced by [2] and its applications to finance can be found in [7,4], and [5] for example. Also, GIG distribution has been used as a mixing distribution in a mixed Poisson distribution (Sichel’s distribution in [28]) to model overdispersed count data (e.g. [26,27]) and in a gamma distribution to fit the total economic damage caused by hurricanes ([10]). However, [15] mentioned that there is a limitation to use of the GIG in some cases since a simple expression for its survivor function is not available..." (Willmot G. y Woo J., octubre 2022, Volumen 430)
 
-### Parametros y explicación
+### Parámetros y explicación
 
 Para las funciones:
 
@@ -126,17 +127,17 @@ Para las funciones:
 * qSICHEL(p, mu, sigma, nu, lower,tail = TRUE, log.p = FALSE, max.value)
 * rSICHEL(n, mu, sigma, nu, max.value)
 
-Se identican los parametros:
+Se identifican los parámetros:
 
-* x: vector de cuantiles con numeros no negativos
+* x: vector de cuantiles con números no negativos
 * mu: vector de mu positivo
 * sigma: vector de dispersión positiva sigma
 * nu: vector de nu
 * p: vector de probabilidades
 * q: vector de cuantiles
-* n: numero de valores randoms a retornar
+* n: número de valores randoms a retornar
 * log, log.p: si es verdadero las probabilidades p serán dadas como log(p)
-* lower.tail: Si es verdadero las probablidades son P[X <= x] sino P[X > x]
+* lower.tail: Si es verdadero las probabilidades son P[X <= x] sino P[X > x]
 
 ### Grafico de probabilidad y probabilidad acumulada
 
@@ -192,7 +193,7 @@ distribucion = rSICHEL(1000)
 hist(distribucion, breaks = 10, main = 'Histograma de 1000 datos')
 ```
 
-De los histogramas se puede observar que hay un gran aumento en la probabilidad del número 1 y una gran disminución de su probabilidad en comparacion a la función de densidad, y que a menor cantidad de datos el parentezco a la función densidad es casi nula.
+De los histogramas se puede observar que hay un gran aumento en la probabilidad del número 1 y una gran disminución de su probabilidad en comparación a la función de densidad, y que a menor cantidad de datos el parentesco a la función densidad es casi nula.
 
 # Distribución Logaritmica
 
@@ -206,7 +207,7 @@ A continuación se cita un articulo en el que se ocupa esta distribución para u
 
 "In a recent series of papers from this laboratory, the particle size distribution of a variety of colloids has been determined by comparison of the polarization of the scattered light with theoretical calculations. These calculations assumed that the particle sizes could be represented by a two-parameter distribution which we had called a logarithmic normal distribution." (J. Phys. Chem. 1964, 68, 11, 3093)
 
-### Parametros y explicación
+### Parámetros y explicación
 
 Para las funciones:
 
@@ -215,15 +216,15 @@ Para las funciones:
 * qlogarithmic(p, prob, lower.tail = TRUE, log.p = FALSE)
 * rlogarithmic(n, prob)
 
-y sus parametros son:
+y sus parámetros son:
 
 * x: vector de cuantiles con números positivos
 * q: vector de cuantiles
 * p: vector de probabilidades
-* n: numero de valores a generar, si el largo > 1, el largo sera la cantidad
-* prob: parametro de probabilidad entre 0 <= prob <= 1
-* log, log.p = si es true, las probabilidades p seran entregadas como log(p)
-* lower.tail: Si es verdadero las probablidades son P[X <= x] sino P[X > x]
+* n: número de valores a generar, si el largo > 1, el largo será la cantidad
+* prob: parámetro de probabilidad entre 0 <= prob <= 1
+* log, log.p = si es true, las probabilidades p serán entregadas como log(p)
+* lower.tail: Si es verdadero las probabilidades son P[X <= x] sino P[X > x]
 
 ### Grafico de probabilidad y probabilidad acumulada
 
@@ -278,7 +279,7 @@ distribucion = rlogarithmic(1000, 0.6)
 hist(distribucion, breaks = 10, main = 'Histograma de 1000 datos')
 ```
 
-De los histogramas se puede observar que hay un gran aumento en la probabilidad del número 1 y una gran disminución de su probabilidad en comparacion a la función de densidad, y que a menor cantidad de datos el parentezco a la función densidad es casi nula.
+De los histogramas se puede observar que hay un gran aumento en la probabilidad del número 1 y una gran disminución de su probabilidad en comparación a la función de densidad, y que a menor cantidad de datos el parentesco a la función densidad es casi nula.
 
 ### Referencias
 
