@@ -1,0 +1,152 @@
+
+title: "Pep2"
+author: "Joaquín Saldivia, Lucas Mesias"
+date: "2023-07-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library("nortest")
+```
+
+# PEP 2
+
+1. Recolección de datos (10 puntos). Descargar los datos y combinar los archivos en un único csv. Definir y aplicar una estrategia para tratar los datos con valores faltantes, en caso de haber. Finalmente, guardar el archivo único en formato csv.
+
+```{r}
+# Obtén la lista de archivos CSV en tu directorio
+archivos <- list.files(path = "PROCESADOS", pattern = "*.csv", full.names = TRUE)
+
+# Crea un dataframe vacío para almacenar los datos
+datos_combinados <- lapply(archivos, read.csv, header=TRUE) %>% bind_rows()
+
+# Guarda los datos combinados en un nuevo archivo CSV
+write.csv(datos_combinados, "datos_combinados.csv", row.names = FALSE)
+```
+
+No se encuentran datos faltantes o iguales a NA
+
+2. Organización y clasificación de los datos (10 puntos). Utilizando el archivo csv único creado, generar una tabla que describa cualitativamente cada una de las variables, clasificándolas desde una perspectiva estadística.
+
+```{r}
+# Obtener la frecuencia de cada dato en todas las columnas
+obtener_frecuencia <- function(arg) {
+  frecuencia_columna <- table(arg)
+  resultado <- data.frame(Nombre = names(frecuencia_columna), Cantidad = as.vector(frecuencia_columna))
+  return(resultado)
+}
+
+frecuenciaEstamento = obtener_frecuencia(datos_combinados$Estamento)
+frecuenciaGrado = obtener_frecuencia(datos_combinados$Grado)
+frecuenciaTituloOficio = obtener_frecuencia(datos_combinados$Titulo.Oficio)
+frecuenciaFuncionCargo = obtener_frecuencia(datos_combinados$Funcion.Cargo)
+frecuenciaUnidad = obtener_frecuencia(datos_combinados$Unidad)
+frecuenciaBrutoHaber = obtener_frecuencia(datos_combinados$BrutoHaber)
+
+```
+
+Grado: Cualitativa Ordinal
+Estamento: Cualitativa Nominal
+Titulo Oficio: Cualitativa Nominal
+Funcion Cargo: Cualitativa Nominal
+Unidad: Cualitativa Nominal
+Bruto Haber: Cuantitativa Discreta
+
+3. Análisis descriptivo (25 puntos). Estudiar la distribución de frecuencia de las variables “Estamento”, “Unidad”, “Grado” y “Bruto Haber” (Remuneración). Utilizar gráficos o tablas para las variables cualitativas e histogramas para las variables cuantitativas. Si hay muchas categorías para las variables cualitativas, limítese a las 10 más frecuentes. En el caso de la remuneración, incluir el estudio de las medidas estadísticas.
+
+```{r}
+describir_variable_cualitativa <- function(variable) {
+  top_10_mas_repetidos <- variable %>%
+  arrange(desc(Cantidad)) %>%
+  head(10)
+  print(top_10_mas_repetidos)
+}
+
+# Función para describir variables cuantitativas y generar histogramas
+describir_variable_cuantitativa <- function(variable) {
+  ggplot(data = variable, aes(x = Nombre, y = Cantidad)) +
+        geom_bar(stat = "identity", fill = "aquamarine") +
+        labs(title = "Frecuencia de datos", x = "Dato", y = "Frecuencia")
+}
+
+Mode <- function(x){
+      ux <- unique(x)
+      ux[which.max(tabulate(match(x, ux)))]
+}
+
+describir_variable_cualitativa(frecuenciaEstamento)
+describir_variable_cualitativa(frecuenciaTituloOficio)
+describir_variable_cualitativa(frecuenciaFuncionCargo)
+describir_variable_cualitativa(frecuenciaGrado)
+describir_variable_cualitativa(frecuenciaUnidad)
+describir_variable_cuantitativa(frecuenciaBrutoHaber)
+summary(datos_combinados$BrutoHaber)
+print(Mode(datos_combinados$BrutoHaber))
+```
+
+4. Análisis inferencial (25 puntos). En este punto, concéntrate en dos aspectos:
+
+4.1. La Fundación Sol ha señalado en su estudio publicado el 2021 que sólo el 2% de la población chile gana más de $2.5 millones de pesos (Durán and Kremerman 2021). ¿La remuneración media o mediana de los académicos a contrata de la USACH está dentro de este 2% poblacional?
+
+```{r}
+datos = filter(datos_combinados, Estamento == "ACADEMICOS")
+datosSueldo = datos$BrutoHaber
+shapiro.test(datosSueldo)$p.value
+lillie.test(datosSueldo)$p.value
+ad.test(datosSueldo)$p.value
+cvm.test(datosSueldo)$p.value
+
+wilcox.test(datosSueldo, mu=2500000, conf.int=0.95, alternative = "greater")
+
+```
+
+los test arrojan que no se sigue una distribución normal, por lo que se hace un test no paramétrico de una muestra.
+
+a raiz de se esto se opta por usar wilcoxon test, el cual arroja que la media de remuneración de los academicos de la USACH pertenecen al 2% que gana mas de $2.5M. 
+
+4.2. ¿Cómo responde un modelo de regresión lineal simple en términos de calidad en relación a estas dos variables: grado y remuneración? Existen relaciones directas entre el grado de los funcionarios y su remuneración.
+
+```{r}
+# Cambiar todos los valores "S/G" por 0 en una columna del dataframe
+datos_combinados$Grado <- ifelse(datos_combinados$Grado == "S/G", 0, datos_combinados$Grado)
+datos_combinados$Grado <- as.integer(datos_combinados$Grado)
+
+filterdata = subset(datos_combinados, Grado > 0)
+
+regresion = lm(Grado ~ BrutoHaber, data = subset(datos_combinados, Grado > 0))
+
+g11 = ggplot(datos_combinados,aes(x=BrutoHaber,y=Grado))
+g11 = g11 + geom_point(aes(x=BrutoHaber,y=Grado),datos_combinados,color="brown")
+g11 = g11 + theme_bw() + ylab("Grado")
+g11 = g11 + xlab("Sueldo (Clp$ pesos)")
+g11 = g11 + theme(axis.text = element_text(size = 16),
+ axis.title.x = element_text(size = 14),
+ axis.title.y = element_text(size = 14))
+g11 = g11 + geom_smooth(method = "lm",level = 0.95, color = "black", fill =
+"burlywood1")
+#Grafico
+plot(g11)
+#Resultado
+regresion
+
+```
+
+Se cambian los Sin grado por 0 para poder continuar con el modelo, este valor es elegido ya que en la medicion de grados no esta contemplado el grado 0.
+
+Ademas luego esto los que tenga grado 0 no se consideran en la regresión ya que estan fuera del intervalo.
+
+5. Analisis de resultados (20 puntos). Analizar los resultados obtenidos en las etapas 3 y 4 desde el punto de vista de la problemática.
+
+Con los resultados obtenidos se observa una disparidad con respecto al sueldo y al grado del funcionario, viendo que los de grado 5 y grado 20 ganan sueldos similares.
+
+6. Toma de decisiones (10 puntos). Si fuese parte del equipo gestor de recursos humanos de la universidad, ¿qué decisiones tomaría con base a los resultados obtenidos?
+
+Se podria hacer un ajuste de sueldos para que la ganancia de cada funcionario sea acorde a su grado respectivo.
+
+
+# Referencia
+
+OpenAI. (2021). ChatGPT [Software]. Disponible en: https://openai.com
