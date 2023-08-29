@@ -1,0 +1,66 @@
+---
+title: "Ejercicio 5"
+author: "Joaquín Saldivia"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(actuar)
+
+library(ggplot2)
+```
+
+Para este ejercicio se hace uso de la distribución logarítmica dado que de las tres seleccionadas es la con menor cantidad de restricciones y permite hacer los gráficos 3D requeridos para la actividad.
+
+```{r}
+# Definir una semilla para el generador de números aleatorios
+set.seed(300)
+
+# Generar una muestra aleatoria utilizando la función rlogarithmic()
+theta0 <- c(0.0001, 0.9999)  # Parámetro fijo para la distribución logarítmica
+muestra <- rlogarithmic(n = 1000, prob = theta0)
+
+# Implementar la función log(L(theta))
+log_likelihood <- function(theta) {
+  if (all(theta <= 0.9999) && all(theta >= 0.0001)) {
+    sum(dlogarithmic(muestra, prob = theta, log = TRUE))
+  } else {
+    NA
+  }
+}
+# Crear una matriz de coordenadas para theta1 y theta2
+theta1 <- seq(0.001, 0.999, length.out = 50)
+theta2 <- seq(0.001, 0.999, length.out = 50)
+grid <- expand.grid(theta1 = theta1, theta2 = theta2)
+
+# Calcular los valores de log-verosimilitud para cada combinación de theta1 y theta2
+log_likelihood_values <- apply(grid, 1, function(theta) {log_likelihood(theta)})
+
+# Crear una matriz de valores de log-verosimilitud para graficar
+z <- matrix(log_likelihood_values, nrow = length(theta1), ncol = length(theta2), byrow = TRUE)
+
+# Graficar la función de log-verosimilitud utilizando persp()
+persp(theta1, theta2, z, theta = 15, phi = 30, col = "lightblue",
+      xlab = "theta1", ylab = "theta2", zlab = "log(L(theta))")
+```
+
+En la función log_likehood se establece un límite para theta ya que para valores muy cercanos a 0 o a 1 esta se indefine generando NaNs y para no generar valores atípicos a la distribución se retorna NA.
+
+```{r}
+optim_result <- optim(theta0, log_likelihood)
+estimados <- optim_result$par
+print(estimados)
+```
+
+```{r}
+print(theta0)
+```
+
+Se observa que uno de los valores obtenidos de la estimación es idéntico mientras que el segundo valor inicial tiene una diferencia notable con respecto a la estimación.
+
+# Referencias
+
+1. Modelo GPT-3.5, OpenAI (2021). ChatGPT. [Software informático]. Disponible en https://openai.com

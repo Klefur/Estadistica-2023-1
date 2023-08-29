@@ -1,0 +1,110 @@
+---
+title: "Ejercicio 6"
+author: "Joaquín Saldivia"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("BSDA")
+library("stats")
+```
+
+### Buscar y resolver un ejemplo de uso de la prueba z con una cola
+
+Supongamos que tenemos una población de estudiantes y queremos determinar si la altura promedio de los estudiantes en una muestra particular es significativamente mayor que la altura promedio de la población general
+
+Se trabaja con 30 estudiantes aleatorios con altura promedio 175cm en la muestra y un promedio de 170cm en la población con una desviación estándar de 5cm.
+
+```{r}
+set.seed(30)
+
+estudiantes = rnorm(30, mean=175, sd = 5)
+media_p = 170
+ds = 5
+
+z.test(estudiantes, mu=media_p, sigma.x=ds, alternative="greater", conf.level = .95)
+```
+con un intervalo de confianza del 95% se acepta la hipotesis alternativa, que nos indica que la media es mayor a 170cm.
+
+### Buscar y resolver un ejemplo de uso de la prueba t con una cola.
+
+Supongamos que tenemos una muestra de 25 estudiantes y queremos determinar si la media de sus calificaciones en un examen es significativamente mayor que 75 puntos (media poblacional). Para ello, utilizaremos la prueba t de una cola.
+
+```{r}
+muestra_calificaciones <- rnorm(25, mean = 78, sd = 10)
+
+t.test(muestra_calificaciones, alternative = "greater", mu = 75, conf.level = 0.95)
+```
+
+con un intervalo de confianza del 95% se acepta la hipotesis alternativa que nos indica que la media es mayor a 75 puntos.
+
+### Buscar y resolver un ejemplo de uso de la prueba chi para varianza con dos colas.
+
+```{r}
+muestra_grupo1 <- rnorm(30, mean = 80, sd = 10) 
+muestra_grupo2 <- rnorm(25, mean = 85, sd = 15)
+var.test(muestra_grupo1, muestra_grupo2, conf.level = 0.95)
+```
+
+con un intervalo de confianza del 95% se acepta la hipotesis alternativa que nos indica que las varianzas no son iguales.
+
+### Buscar/crear y resolver un ejemplo de bondad de ajuste Chi cuadrado, utilice el conjunto de datos Iris disponible en R data(“iris”).
+
+El objetivo será probar si la distribución de las especies de flores en el conjunto de datos sigue una distribución teórica que esperamos en función de una proporción específica que estableceremos.
+
+```{r}
+data("iris")
+
+distribucion_teorica <- c(0.4, 0.3, 0.3)
+
+conteo_especies = table(iris$Species)
+
+chisq.test(conteo_especies, p = distribucion_teorica)
+```
+
+como el p-value es mayor a 0.05 lo que indica un 95% de intervalo de confianza, se acepta la hipotesis nula que nos indica que no hay suficiente evidencia para afirmar que las especies de flores no siguen la distribución teórica esperada.
+
+### Buscar/crear y resolver un ejemplo de prueba de hipótesis en una proporción binomial, de una o dos colas.
+
+Supongamos que queremos probar si la proporción de éxitos (éxito = 1, fracaso = 0) en una muestra de estudiantes que aprobaron un examen es significativamente diferente del 70%.
+
+```{r}
+muestra_binomial = rbinom(100, size = 1, prob = 0.7)
+
+prop.test(sum(muestra_binomial), length(muestra_binomial), p = 0.7, alternative = "two.sided", conf.level = 0.95)
+```
+
+como el p-value es mayor a 0.05 se acepta la hipotesis nula, la que indica que no tenemos suficiente evidencia para afirmar que la proporción es diferente de la proporción teórica del 70%
+
+### Buscar/crear y resolver un ejemplo de prueba de hipótesis en el que aplique la prueba del signo.
+
+Supongamos que tenemos dos conjuntos de datos antes y después de aplicar un programa de entrenamiento a un grupo de personas para mejorar su rendimiento físico. Queremos determinar si el programa de entrenamiento tuvo un impacto significativo en el rendimiento de las personas.
+
+```{r}
+antes_entrenamiento <- c(10, 12, 8, 14, 9, 11, 13, 7, 15, 12)
+despues_entrenamiento <- c(12, 15, 11, 18, 13, 14, 16, 10, 17, 15)
+
+diferencias = despues_entrenamiento - antes_entrenamiento
+
+SIGN.test(diferencias, mu = 0, alternative = "two.sided", conf.level = 0.95)
+```
+
+como el p-value es menor a al valor de significancia (0.05) se rechaza la hipotesis nula obteniendo que hay evidencia suficiente para afirmar que el programa de entrenamiento tuvo un impacto significativo en el rendimiento físico de las personas.
+
+### Buscar/crear y resolver un ejemplo de prueba de hipótesis en el que aplique la prueba de Wilcoxon para una muestra.
+
+Supongamos que tenemos una muestra de 15 estudiantes y queremos probar si el tiempo promedio que tardan en completar un examen es igual a 30 minutos.
+
+```{r}
+tiempo_examen <- c(25, 30, 28, 32, 29, 31, 27, 30, 31, 33, 29, 30, 28, 32, 30)
+
+wilcox.test(tiempo_examen, mu = 30, alternative = "two.sided")
+```
+
+con un valor de significancia de 0.05 se acepta la hipotesis nula que indica que no tenemos suficiente evidencia para afirmar que el tiempo promedio es diferente de 30 minutos.
+
+### Referencias
+
+- OpenAI. "ChatGPT (GPT-3.5) - Asistente virtual basado en el modelo de lenguaje GPT-3.5." disponible en https://chat.openai.com/.
